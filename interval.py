@@ -3,12 +3,12 @@ from __future__ import annotations
 
 """
 TODOS
-
+* add page numbers
 * Special relationships
-* Difference tones (3 varieties
+* Difference tones (3 varieties)
 * Periodicity pitches
 * Something something harmonics
-* Convert to decimal MIDI pitch (for use in Scamp)
+* convert list of intervals to harmonic/subharmonic scale degrees
 
 """
 
