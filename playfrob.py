@@ -2,6 +2,7 @@
 
 import random
 from numbers import Real
+import time
 
 
 import interval as ji
@@ -32,7 +33,8 @@ def main():
             # print(pitch)
             opart.play_note(pitch,
                 random.choice([0.6, 0.7, 0.8, 0.9, 1.0]),
-                0.3 + random.choice([0.09, 0.088, 0.092, 0.087, 0.084]))
+                random.choice([0.09, 0.088, 0.092, 0.087, 0.084]))
+            # time.sleep(1)
 
 
 
