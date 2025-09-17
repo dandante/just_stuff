@@ -7,10 +7,12 @@ Based on The Just Intotation Primer by David B. Doty.
 Page numbers refer to that book.
 
 TODOS
-
-* Difference tones (3 varieties
+* add page numbers
+* Special relationships
+* Difference tones (3 varieties)
 * Periodicity pitches
 * Something something harmonics
+* convert list of intervals to harmonic/subharmonic scale degrees
 
 """
 
