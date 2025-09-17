@@ -2,13 +2,15 @@
 from __future__ import annotations
 
 """
+Working with Just Intonation intervals.
+Based on The Just Intotation Primer by David B. Doty.
+Page numbers refer to that book.
+
 TODOS
 
-* Special relationships
 * Difference tones (3 varieties
 * Periodicity pitches
 * Something something harmonics
-* Convert to decimal MIDI pitch (for use in Scamp)
 
 """
 
@@ -20,6 +22,7 @@ import math
 import itertools, operator
 
 from sympy import factorint
+import scamp_extensions.pitch.utilities as pitchutils
 
 
 import itertools, operator
@@ -122,6 +125,24 @@ class Interval(Fraction):
 
         return int(base_frequency * self)
 
+
+    def to_midi(self, base_frequency: int = 264) -> float:
+        """
+        Converts the interval to a (floating-point) MIDI note number.
+
+        Args:
+            base_frequency (int): The base frequency in Hz.
+              The default is 264Hz, the C below A440.
+
+        Returns:
+            float: The MIDI note number.
+        """
+
+        return pitchutils.hertz_to_midi(self.to_hz(base_frequency)) # type: ignore
+
+
+
+
     def to_cents(self) -> float:
         theta = 1200 / math.log10(2)
         return math.log10(self) * theta
@@ -156,6 +177,7 @@ class Interval(Fraction):
         # use Fraction's mul directly
         result = Fraction.__mul__(self, other) # type: ignore[override]
         # TODO handle it if result > 2/1
+        # Convert to Interval:
         return type(self)(result.numerator, result.denominator) # otherwise result will be a Fraction
 
 
@@ -164,6 +186,7 @@ class Interval(Fraction):
         To multiply two Just intervals, you actually multiply them.
         """
         # use Fraction's mul directly
+        # I guess that means we don't need this method?
         result = Fraction.__mul__(self, other) # type: ignore[override]
         # TODO handle it if result > 2/1
         return type(self)(result.numerator, result.denominator) # otherwise result will be a Fraction
@@ -182,6 +205,7 @@ class Interval(Fraction):
     def divide(self, pieces: int, prime_limit: int|None = None) -> List[Self]:
         """
         Divide an interval into a given number of pieces, optionally limiting the prime factors of the resulting intervals.
+        Page 26.
         """
 
         if prime_limit:
@@ -211,6 +235,47 @@ class Interval(Fraction):
         return ret
 
 Interval.octave = Interval(2, 1)
+
+def special_relationships():
+    """
+    Arthur Benade's "special relationships".
+    Page 22.
+    """
+    return [
+        Interval(2, 1), # Octave
+        Interval(3, 2), # Perfect Fifth
+        Interval(4, 3), # Perfect Fourth
+        Interval(5, 3), # Major Sixth
+        Interval(5, 4), # Major Third
+        Interval(6, 5), # Minor Third
+        Interval(7, 4), # Harmonic or Septimal Major Seventh
+        Interval(7, 5), # Septimal Tritone
+        Interval(8, 5), # Minor Sixth
+        Interval(7, 6), # Subminor or Septimal Major Third
+        # above an octave:
+        Interval(7, 3), # Septimal or Subminor Tenth
+        Interval(8, 3), # Octave Extension of Perfect Fourth
+        Interval(3, 1), # Perfect Twelfth
+        Interval(7, 2), # Octave Extension of Harmonic Seventh
+        Interval(4, 1), # Double Octave
+        Interval(5, 1), # Two octaves plus a perfect fifth
+        Interval(7, 1), # Two octaves plus a harmonic seventh
+        Interval(8, 1), # Triple octave
+        Interval(9, 4), # Major Ninth
+    ]
+
+
+def difftone1(f1: Interval, f2: Interval) -> Interval:
+    "page 16"
+    return f1 - f2
+
+def difftone2(f1: Interval, f2: Interval) -> Interval:
+    return (2 * f1) - f2
+
+def difftone3(f1: Interval, f2: Interval) -> Interval:
+    return (3 * f1) - (2 * f2)
+
+
 
 if __name__ == "__main__":
     # print(Interval(8, 7).is_superparticular())
